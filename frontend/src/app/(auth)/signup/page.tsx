@@ -1,40 +1,5 @@
+import SignupForm from "@/components/auth/SignupForm";
+
 export default function SignupPage() {
-  return (
-    <form className="w-full max-w-md bg-card p-8 rounded-2xl border border-border space-y-5">
-      <h1 className="text-3xl font-bold text-foreground text-center">
-        Create Account
-      </h1>
-
-      <input
-        name="username"
-        placeholder="Username"
-        className="w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground"
-      />
-
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        className="w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground"
-      />
-
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        className="w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground"
-      />
-
-      <button className="w-full bg-foreground text-background py-3 rounded-lg cursor-pointer">
-        Create Account
-      </button>
-
-      <p className="text-center">
-        Already have an account?{" "}
-        <a href="/signin" className="text-blue-500 hover:underline">
-          Sign in
-        </a>
-      </p>
-    </form>
-  );
+  return <SignupForm />;
 }
