@@ -2,7 +2,12 @@
 
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { signinSchema, signupSchema } from "@/lib/validations";
+import {
+  SigninFormValues,
+  signinSchema,
+  SignupFormValues,
+  signupSchema,
+} from "@/lib/validations";
 import { apiRequest } from "@/lib/apiRequest";
 
 const cookieOptions = {
@@ -11,13 +16,14 @@ const cookieOptions = {
   path: "/",
 };
 
-export async function signupAction(formData: unknown) {
+export async function signupAction(formData: SignupFormValues) {
   try {
     const validatedFields = signupSchema.safeParse(formData);
 
     if (!validatedFields.success) {
       return {
-        error: "Invalid fields",
+        success: false,
+        message: "Invalid fields",
       };
     }
 
@@ -53,13 +59,14 @@ export async function signupAction(formData: unknown) {
   }
 }
 
-export async function signinAction(formData: unknown) {
+export async function signinAction(formData: SigninFormValues) {
   try {
     const validatedFields = signinSchema.safeParse(formData);
 
     if (!validatedFields.success) {
       return {
-        error: "Invalid fields",
+        success: false,
+        message: "Invalid fields",
       };
     }
 
