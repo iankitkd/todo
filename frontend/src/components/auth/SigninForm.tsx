@@ -4,9 +4,12 @@ import { signinAction } from "@/actions/auth.actions";
 import { signinSchema, SigninFormValues } from "@/lib/validations";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function SigninForm() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -20,7 +23,13 @@ export default function SigninForm() {
   });
 
   const onSubmit = async (data: SigninFormValues) => {
-    await signinAction(data);
+    const res = await signinAction(data);
+    if (res.success) {
+      toast.success("Signed in successfully");
+      router.push("/");
+    } else {
+      toast.error(res.message);
+    }
   };
 
   return (

@@ -3,9 +3,13 @@
 import { signupAction } from "@/actions/auth.actions";
 import { signupSchema, SignupFormValues } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function SignupForm() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -20,7 +24,13 @@ export default function SignupForm() {
   });
 
   const onSubmit = async (data: SignupFormValues) => {
-    await signupAction(data);
+    const res = await signupAction(data);
+    if (res.success) {
+      toast.success("Signed in successfully");
+      router.push("/");
+    } else {
+      toast.error(res?.message);
+    }
   };
 
   return (

@@ -3,8 +3,13 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { signinSchema, signupSchema } from "@/lib/validations";
+import { apiRequest } from "@/lib/apiRequest";
 
-const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  path: "/",
+};
 
 export async function signupAction(formData: unknown) {
   try {
@@ -18,38 +23,33 @@ export async function signupAction(formData: unknown) {
 
     const { username, email, password } = validatedFields.data;
 
-    // Save user to DB
-    console.log(username, email, password);
-
-    const res = await fetch(`${API_URL}/api/auth/local/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-      }),
+    const data = await apiRequest("/api/auth/local/register", "POST", {
+      username,
+      email,
+      password,
     });
-
-    const data = await res.json();
 
     if (data.jwt) {
       const cookieStore = await cookies();
-
-      cookieStore.set("token", data.jwt, {
-        httpOnly: true,
-        secure: false,
-        path: "/",
-      });
-
-      redirect("/dashboard");
+      cookieStore.set("token", data.jwt, cookieOptions);
+      // redirect("/dashboard");
     }
 
-    return data;
+    if (data.error) {
+      return {
+        success: false,
+        message: data.error.message ?? "Something went wrong",
+        error: data.error,
+      };
+    }
+
+    return { success: true, message: "Signed in successfully" };
   } catch (error) {
-    console.log(error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Something went wrong",
+      error,
+    };
   }
 }
 
@@ -64,39 +64,33 @@ export async function signinAction(formData: unknown) {
     }
 
     const { identifier, password } = validatedFields.data;
-    const isEmail = identifier.includes("@");
 
-    console.log(identifier, password, isEmail);
-
-    const res = await fetch(`${API_URL}/api/auth/local`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        loginWith: isEmail ? "email" : "username",
-        identifier,
-        password,
-      }),
+    const data = await apiRequest("/api/auth/local", "POST", {
+      identifier,
+      password,
     });
-
-    const data = await res.json();
 
     if (data.jwt) {
       const cookieStore = await cookies();
-
-      cookieStore.set("token", data.jwt, {
-        httpOnly: true,
-        secure: false,
-        path: "/",
-      });
-
-      redirect("/dashboard");
+      cookieStore.set("token", data.jwt, cookieOptions);
+      // redirect("/dashboard");
     }
 
-    return data;
+    if (data.error) {
+      return {
+        success: false,
+        message: data.error.message ?? "Something went wrong",
+        error: data.error,
+      };
+    }
+
+    return { success: true, message: "Signed in successfully" };
   } catch (error) {
-    console.log(error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Something went wrong",
+      error,
+    };
   }
 }
 
