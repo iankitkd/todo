@@ -6,9 +6,8 @@ import { TodoType } from "@/types";
 export default function TodoItem({ todo }: { todo: TodoType }) {
   return (
     <div className="flex items-center justify-between gap-3 bg-card border border-border rounded-xl px-4 py-2">
-      {/* Check Button */}
       <button
-        onClick={() => toggleTodo(todo.id, todo.isCompleted)}
+        onClick={() => toggleTodo(todo.documentId, todo.isCompleted)}
         className={`w-5 h-5 rounded border-2 flex items-center justify-center transition cursor-pointer
           ${
             todo.isCompleted
@@ -19,18 +18,14 @@ export default function TodoItem({ todo }: { todo: TodoType }) {
         {todo.isCompleted && "✓"}
       </button>
 
-      {/* Todo Title */}
       <p
-        className={`flex-1 ${
-          todo.isCompleted ? "line-through text-muted-foreground" : ""
-        }`}
+        className={`flex-1 ${todo.isCompleted ? "line-through text-muted-foreground" : ""}`}
       >
         {todo.title}
       </p>
 
-      {/* Delete Button */}
       <button
-        onClick={() => deleteTodo(todo.id)}
+        onClick={() => deleteTodo(todo.documentId)}
         className="bg-destructive text-destructive-foreground px-3 py-1 rounded-lg cursor-pointer"
       >
         Delete

@@ -1,16 +1,15 @@
 import TodoForm from "@/components/dashboard/TodoForm";
-import TodoItem from "@/components/dashboard/TodoItems";
+import TodoItem from "@/components/dashboard/TodoItem";
 import { apiRequest } from "@/lib/apiRequest";
 import { TodoType } from "@/types";
 
 export default async function DashboardPage() {
   const todos = await apiRequest("/api/todos", "GET");
-  console.log(todos, "todo");
 
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-2xl mx-auto space-y-6">
-        <h1 className="text-4xl font-bold">My Todos</h1>
+        <h1 className="text-4xl font-bold text-center">My Todos</h1>
 
         <TodoForm />
 

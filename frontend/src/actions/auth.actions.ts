@@ -101,7 +101,7 @@ export async function signinAction(formData: SigninFormValues) {
   }
 }
 
-export async function logoutAction() {
+export async function signoutAction() {
   const cookieStore = await cookies();
   cookieStore.delete("token");
   redirect("/signin");

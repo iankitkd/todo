@@ -16,15 +16,17 @@ export async function createTodo(title: string) {
   revalidatePath("/");
 }
 
-export async function toggleTodo(id: number, isCompleted: boolean) {
-  await apiRequest(`/api/todos/${id}`, "PUT", {
+export async function toggleTodo(id: string, isCompleted: boolean) {
+  const res = await apiRequest(`/api/todos/${id}`, "PUT", {
     data: { isCompleted: !isCompleted },
   });
+
+  console.log(res);
 
   revalidatePath("/");
 }
 
-export async function deleteTodo(id: number) {
+export async function deleteTodo(id: string) {
   await apiRequest(`/api/todos/${id}`, "DELETE");
   revalidatePath("/");
 }
