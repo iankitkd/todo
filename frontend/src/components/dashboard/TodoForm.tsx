@@ -1,6 +1,6 @@
 "use client";
 
-import { createTodo } from "@/actions/todo.actions";
+import { createTodoWithSubtodos } from "@/actions/todo.actions";
 import { useState } from "react";
 
 export default function TodoForm() {
@@ -31,7 +31,7 @@ export default function TodoForm() {
     }
     setIsSubmitting(true);
 
-    await createTodo(title);
+    await createTodoWithSubtodos(title);
 
     setIsSubmitting(false);
     setTitle("");
@@ -46,6 +46,7 @@ export default function TodoForm() {
           value={title}
           onChange={handleTitleChange}
           placeholder="Add todo..."
+          required
           className="w-full rounded-lg bg-input border border-border px-4 py-3"
         />
         {error && <p className="text-sm text-destructive mt-1 ml-1">{error}</p>}

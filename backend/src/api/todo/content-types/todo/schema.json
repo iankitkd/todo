@@ -25,6 +25,12 @@
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "todos"
+    },
+    "subtodos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::subtodo.subtodo",
+      "mappedBy": "todo"
     }
   }
 }

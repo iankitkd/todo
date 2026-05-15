@@ -3,4 +3,12 @@ export type TodoType = {
   documentId: string;
   title: string;
   isCompleted: boolean;
+  subtodos: SubTodoType[];
 };
+
+export interface SubTodoType {
+  id: number;
+  documentId: string;
+  title: string;
+  isCompleted: boolean;
+}

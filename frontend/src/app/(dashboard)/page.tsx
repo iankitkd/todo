@@ -1,10 +1,10 @@
+import { getTodos } from "@/actions/todo.actions";
 import TodoForm from "@/components/dashboard/TodoForm";
-import TodoItem from "@/components/dashboard/TodoItem";
-import { apiRequest } from "@/lib/apiRequest";
+import TodoGroup from "@/components/dashboard/TodoGroup";
 import { TodoType } from "@/types";
 
 export default async function DashboardPage() {
-  const todos = await apiRequest("/api/todos", "GET");
+  const todos = await getTodos();
 
   return (
     <div className="min-h-screen p-6">
@@ -14,8 +14,8 @@ export default async function DashboardPage() {
         <TodoForm />
 
         <div className="space-y-3">
-          {todos.data?.map((todo: TodoType) => (
-            <TodoItem key={todo.id} todo={todo} />
+          {todos?.map((todo: TodoType) => (
+            <TodoGroup key={todo.id} todo={todo} />
           ))}
         </div>
       </div>

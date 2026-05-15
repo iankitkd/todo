@@ -52,6 +52,7 @@ export default factories.createCoreController(
           },
         },
         populate: {
+          subtodos: true,
           user: {
             fields: ["id", "username", "email"],
           },
@@ -69,6 +70,7 @@ export default factories.createCoreController(
       const todo = await strapi.documents("api::todo.todo").findOne({
         documentId: id,
         populate: {
+          subtodos: true,
           user: {
             fields: ["id", "username", "email"],
           },
@@ -92,6 +94,7 @@ export default factories.createCoreController(
       console.log(ctx);
       const user = ctx.state.user;
       const { id } = ctx.params;
+      const { isCompleted, title } = ctx.request.body.data;
 
       const todo = await strapi.documents("api::todo.todo").findOne({
         documentId: id,
@@ -113,8 +116,33 @@ export default factories.createCoreController(
 
       const updatedTodo = await strapi.documents("api::todo.todo").update({
         documentId: id,
-        data: ctx.request.body.data,
+        data: { isCompleted: isCompleted, title: title },
       });
+
+      if (isCompleted !== undefined) {
+        // find subtodos
+        const subtodos = await strapi
+          .documents("api::subtodo.subtodo")
+          .findMany({
+            filters: {
+              todo: {
+                documentId: {
+                  $eq: id,
+                },
+              },
+            },
+          });
+
+        // update subtodos
+        await Promise.all(
+          subtodos.map((subtodo) =>
+            strapi.documents("api::subtodo.subtodo").update({
+              documentId: subtodo.documentId,
+              data: { isCompleted: isCompleted },
+            }),
+          ),
+        );
+      }
 
       return updatedTodo;
     },
@@ -142,6 +170,27 @@ export default factories.createCoreController(
         return ctx.forbidden("Not your todo");
       }
 
+      // find subtodos
+      const subtodos = await strapi.documents("api::subtodo.subtodo").findMany({
+        filters: {
+          todo: {
+            documentId: {
+              $eq: id,
+            },
+          },
+        },
+      });
+
+      // Delete subtodos
+      await Promise.all(
+        subtodos.map((subtodo) =>
+          strapi.documents("api::subtodo.subtodo").delete({
+            documentId: subtodo.documentId,
+          }),
+        ),
+      );
+
+      // Delete todo
       await strapi.documents("api::todo.todo").delete({
         documentId: id,
       });
